@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
 	<head>
-    	<title><%= title %></title>
-    	<link rel='stylesheet' href='/stylesheets/style.css' />
-		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    	<script src="javascripts/facebook.js"></script>
-  		<script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+  	<title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="author" content="Juan I. Di Nella">
+    <meta name="description" content="Diseño emocional - Tesis Juan I. Di Nella">
+  	<link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,700' rel='stylesheet' type='text/css'>
+
+	  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  	<script src="javascripts/facebook.js"></script>
+		<script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+
 		<script>
 		var socket = io.connect('http://juancito.com:8079');
 		socket.on('news', function (data) {
@@ -25,12 +33,17 @@
 
   	</head>
   	<body>
-		<div id="fb-root"></div>
-  		<fb:login-button scope="public_profile,email,read_stream" onlogin="checkLoginState();">
-		</fb:login-button>
+      <div class="content">
+        <div class="intro">
+          <h3>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</h3>
+        </div>
+  		  <div id="fb-root"></div>
+    		  <fb:login-button scope="public_profile,email,read_stream" onlogin="checkLoginState();">
+  		    </fb:login-button>
 
-		<div id="status"></div>
-		<div id="mensajes"></div>
-		<div id="datos">cargando...</div>
+      	 <div id="status"></div>
+      	 <div id="mensajes"></div>
+      	 <div id="datos">cargando...</div>
+        </div>
 	</body>
 </html>
