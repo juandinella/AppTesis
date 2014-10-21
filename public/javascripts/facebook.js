@@ -33,7 +33,7 @@
 
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '265029100362089',
+      appId      : '740789665959022',
       cookie     : true,  // enable cookies to allow the server to access
                   // the session
       xfbml      : true,  // parse social plugins on this page
@@ -78,13 +78,7 @@
         'Thanks for logging in, ' + response.name + '!';
       });
 
-    //Mensajes de Feeds
-    // FB.api('/me/home?fields=message', function(response) {
-    //   for(var i=0; i<response.data.length;i++){
-    //     console.log('Los mensajes de tu feed son: ' + response.data[i].message);
-    //   }
-    // });
-
+ 
 
     // FB.api('/me?fields=id,posts.{message}', function(response) {
     //   for(var a=0; a<response.data.length;a++){
@@ -93,16 +87,22 @@
     // });
 
 
+    //Profile pic
+    FB.api("/me/picture?width=180&height=180",  function(response) {
+        console.log(response.data.url);
+
+    }); 
 
     //Mensajes de Timeline Propio
-    FB.api('/me?fields=id,posts.limit(10000){message}', function(response) {
+    FB.api('/me?fields=id,posts.limit(9999){message}', function(response) {
       var data = [];
       for(var i=0; i<response.posts.data.length;i++){
-            if(typeof response.posts.data[i].message !== "undefined"){ //Quito los post sin texto
-              //console.log('Los mensajes de tu timeline son: ' + response.posts.data[i].message);
-              data.push(response.posts.data[i].message);
-            }
+        if(typeof response.posts.data[i].message !== "undefined"){ //Quito los post sin texto
+          //console.log('Los mensajes de tu timeline son: ' + response.posts.data[i].message);
+          data.push(response.posts.data[i].message);
           }
-          socket.emit('analizar', data);
-        });
+        }
+        socket.emit('analizar', data);
+      });
+
   }

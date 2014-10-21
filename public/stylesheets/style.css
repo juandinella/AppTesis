@@ -168,10 +168,13 @@ body {
 }
 p {
   color: #fff;
-  line-height: 1.25;
+  line-height: 1.5;
 }
 #datos {
-  display: none;
+  margin-top: 15px;
+}
+#status {
+  margin-top: 6px;
 }
 .intro {
   margin: 0 auto 15px;
