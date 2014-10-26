@@ -65,7 +65,7 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-
+//Seteo Socket.io
 var io = require('socket.io').listen(8079);
 
 io.sockets.on('connection', function (socket) {
