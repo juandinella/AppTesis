@@ -13,23 +13,7 @@
 	  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
   	<script src="javascripts/facebook.js"></script>
 		<script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
-
-		<script>
-		var socket = io.connect('http://juancito.com:8079');
-		socket.on('news', function (data) {
-		  console.log(data);
-		});
-		socket.on('devolverDatos', function (data) {
-		  var datos = document.getElementById("datos");
-		  datos.innerHTML = "";
-		  var mensajes = data.mensajes;
-		  var score = data.score;
-		  for(var i = 0; i < mensajes.length; i++){
-		    datos.innerHTML +=  "<p>" + mensajes[i] + "<span>" + "  score:" + " " +score[i]+ "</span>"+"</p>";
-		  }
-
-		});
-		</script>
+    <script src="javascripts/socket.js"></script>
 
   	</head>
   	<body>

@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var sentiment = require("sentiment");
 
+var d3 = require("d3");
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 

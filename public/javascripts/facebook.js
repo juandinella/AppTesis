@@ -69,9 +69,11 @@
 
     // Here we run a very simple test of the Graph API after login is
     // successful.  See statusChangeCallback() for when this call is made.
+    
     function analizar() {
 
       console.log('Welcome!  Fetching your information.... ');
+
       FB.api('/me', function(response) {
         console.log('Successful login for: ' + response.name);
         document.getElementById('status').innerHTML =
@@ -79,20 +81,21 @@
       });
 
  
-
-    // FB.api('/me?fields=id,posts.{message}', function(response) {
-    //   for(var a=0; a<response.data.length;a++){
-    //     console.log('Los mensajes de tu feed son: ' + response.data[a].message);
-    //   }
-    // });
-
-
     //Profile pic
     FB.api("/me/picture?width=180&height=180",  function(response) {
         console.log(response.data.url);
 
-    }); 
+    });
 
+    //Mensajes Feed 
+    FB.api('/me/home?fields=message', function(response) {
+      for(var a=0; a<response.data.length;a++){
+        console.log('Los mensajes de tu feed son: ' + response.data[a].message);
+      }
+    });
+
+
+  
     //Mensajes de Timeline Propio
     FB.api('/me?fields=id,posts.limit(9999){message}', function(response) {
       var data = [];
