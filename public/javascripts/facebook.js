@@ -70,7 +70,6 @@ window.fbAsyncInit = function() {
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
 
-  
 
     console.log('Welcome!  Fetching your information.... ');
 
@@ -80,15 +79,15 @@ window.fbAsyncInit = function() {
       'Thanks for logging in, ' + response.name + '!';
     });
 
+
+
+function analizar() {
+
 //Profile pic
 FB.api("/me/picture?width=180&height=180",  function(response) {
     console.log(response.data.url);
 
 });
-
-function analizar() {
-
-
 
   //Likes
   // FB.api('/me/likes?fields=name&limit=999', function(response) {
