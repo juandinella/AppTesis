@@ -121,6 +121,7 @@ FB.api("/me/picture?width=180&height=180",  function(response) {
 
 var maximoDePaginas = 10;
 var paginaActual = 1;
+
 function parsearUnaPagina(url){
   //Mensajes de Timeline Propio 
   console.log("Voy a parsear " + url);
