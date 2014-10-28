@@ -79,13 +79,15 @@ window.fbAsyncInit = function() {
       'Thanks for logging in, ' + response.name + '!';
     });
 
-
+/* ==========================================================================
+   Acá empieza la mágia
+   ========================================================================== */
 
 function analizar() {
 
 //Profile pic
 FB.api("/me/picture?width=180&height=180",  function(response) {
-    console.log(response.data.url);
+  imgPerfilAD3(response.data.url);
 
 });
 
@@ -117,28 +119,41 @@ FB.api("/me/picture?width=180&height=180",  function(response) {
   //   socket.emit('analizar', data);
   // });
 
-
+var maximoDePaginas = 10;
+var paginaActual = 1;
+function parsearUnaPagina(url){
   //Mensajes de Timeline Propio 
-  FB.api('/me?fields=id,posts.limit(9999){message}', function(response) {
-    var data = [];
-    for(var i=0; i<response.posts.data.length;i++){
-      if(typeof response.posts.data[i].message !== "undefined"){ //Quito los post sin texto
-        //console.log('Los mensajes de tu timeline son: ' + response.posts.data[i].message);
-        data.push(response.posts.data[i].message);
-        }
-      }
-      socket.emit('analizar', data);
-    });
+  console.log("Voy a parsear " + url);
+  FB.api(url, function(response) {
+    console.log(response);
+    if(response.data.length > 0 && paginaActual <= maximoDePaginas){
+      //Transformo y emito con socketio
+      responseAArray(response);
 
-  // MEnsajes de Timeline Propio 2
-  // FB.api('/me/posts?fields=message&limit=999&until=1384453440', function(response) {
-  //   var data = [];
-  //   for(var i=0; i<response.data.length;i++){
-  //     if(typeof response.data[i].message !== "undefined"){ //Quito los post sin texto
-  //       //console.log('Los mensajes de tu timeline son: ' + response.posts.data[i].message);
-  //       data.push(response.data[i].message);
-  //       }
-  //     }
-  //     socket.emit('analizar', data);
-  //   });
+      //Url de la pagina siguiente
+      var urlNext = response.paging.next;
+      console.log("urlNext raw: " + urlNext);
+      //Borro la parte de "https://graph.facebook.com/v2.1"
+      urlNext = urlNext.substring(31);
+      console.log("urlNext substring: ");
+      console.log(urlNext);
+      parsearUnaPagina(urlNext);
+      paginaActual++;
+    }
+  });
 }
+
+function responseAArray(response){
+  var data = [];
+  for(var i=0; i<response.data.length;i++){
+    if(typeof response.data[i].message !== "undefined"){
+      data.push(response.data[i].message);
+    }
+  }
+  socket.emit('analizar', data);
+}
+
+//Inicio!
+parsearUnaPagina("me/posts?fields=message&limit=999");
+
+} //Fin analizar
