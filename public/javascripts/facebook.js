@@ -70,14 +70,14 @@ window.fbAsyncInit = function() {
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
 
+  //Esto tiraba error
+    // console.log('Welcome!  Fetching your information.... ');
 
-    console.log('Welcome!  Fetching your information.... ');
-
-    FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-      'Thanks for logging in, ' + response.name + '!';
-    });
+    // FB.api('/me', function(response) {
+    //   console.log('Successful login for: ' + response.name);
+    //   document.getElementById('status').innerHTML =
+    //   'Thanks for logging in, ' + response.name + '!';
+    // });
 
 /* ==========================================================================
    Acá empieza la mágia
@@ -86,7 +86,7 @@ window.fbAsyncInit = function() {
 function analizar() {
 
 //Profile pic
-FB.api("/me/picture?width=180&height=180",  function(response) {
+FB.api("/me/picture?width=140&height=140",  function(response) {
   imgPerfilAD3(response.data.url);
 
 });

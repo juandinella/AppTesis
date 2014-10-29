@@ -1,83 +1,92 @@
 var width = 1200,
     height = 400;
 
+var negativo = '#d34055',
+  neutro = '#ffce55',
+  positivo = '#a0d468';
+
 //Create SVG in #viz
 var svg = d3.select('#viz')
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height)
-    .style('background', "#454954")
-    .style('border', '2px solid #656d78')
+  .append('svg')
+  .attr('width', width)
+  .attr('height', height)
+  .style('background', "#454954")
+  .style('border', '2px solid #656d78')
 
-//Create defs
+//Create defs (mascara)
 var defs = d3.select('svg').append("svg:defs");
 
 defs.append("svg:clipPath")
-        .attr("id", "textclip")
-        .append("svg:circle")
-        .attr("width", 180)
-        .attr("height", 180)
-        .attr("x", 200)
-        .attr("y", 50)
-        .attr("cx", 288)
-        .attr("cy", 152)
-        .attr("r", 71)
-        .attr("clipPathUnits","objectBoundingBox")
-        .style("border", "black")
+  .attr("id", "textclip")
+  .append("svg:circle")
+  .attr("width", 140)
+  .attr("height", 140)
+  .attr("cx", 270)
+  .attr("cy", 126)
+  .attr("r", 64)
 
+ //Traigo la imagen y le creo los circulos 
 function imgPerfilAD3(imagen){
 
-var imgs = svg.selectAll("image").data([0]);
-    imgs.enter()
+  //círculo principal   
+  d3.select('svg').append('circle') 
+    .attr("cx", 270)
+    .attr("cy", 126)
+    .attr("r", 74) 
+    .style("fill", "#ed5564")
+
+
+  var circle = svg.selectAll("circle")
+    .data([84, 94, 104], function(d) { return d; });
+
+  circle.enter().append("circle")
+    .attr("cx", 270)
+    .attr("cy", 126)
+    .attr("stroke-width", 1)
+    .attr("stroke", negativo)
+    .style("fill", "none")
+    .attr("r", function(d) { return (d); });
+
+  var imgs = svg.selectAll("image").data([0]);
+
+  imgs.enter()
     .append("svg:image")
     .attr("xlink:href", imagen)
-    .attr("width", 180)
-    .attr("height", 180)
+    .attr("width", 140)
+    .attr("height", 140)
     .attr("x", 200)
     .attr("clip-path", "url(#textclip)")
     .attr("y",50);
 
+} //Fin imgPerfilAD3
 
+
+//Creo circulos positivos
+function circPos(){
+
+ d3.select('svg').append('circle') 
+    .attr("cx", Math.floor(Math.random() * 2000))
+    .attr("cy", Math.floor(Math.random() * 1000))
+    .attr("r", 14) 
+    .style("fill", positivo);
 }
 
+//Creo circulos negativos
+function circNeg(){
 
-// var width = 1200,
-//     height = 400;
+ d3.select('svg').append('circle') 
+    .attr("cx", Math.floor(Math.random() * 2000))
+    .attr("cy", Math.floor(Math.random() * 1000))
+    .attr("r", 14) 
+    .style("fill", negativo);
+}
 
-// //Create SVG in #viz
-// var svg = d3.select('#viz')
-//     .append('svg')
-//     .attr('width', width)
-//     .attr('height', height)
-//     .style('background', "#454954")
-//     .style('border', '2px solid #656d78')
+//Creo circulos neutros
+function circNeu(){
 
-// //Create defs
-// d3.select('svg').append('defs')
-
-// //Create clippath with #mask
-// d3.select('defs').append('clippath')
-//     .attr('id', 'mask')
-
-// function imgPerfilAD3(imagen){
-
-// var imgs = svg.selectAll("image").data([0]);
-//     imgs.enter()
-//     .append("svg:image")
-//     .attr("xlink:href", imagen)
-//     .attr("width", 180)
-//     .attr("height", 180)
-//     .attr("x", 200)
-//     .attr("y",50);
-
-// }
-
-// //Create the circle mask
-// d3.select('clippath').append('circle') 
-//     .attr("width", 50)
-//     .attr("height", 50)
-//     .attr("cx", 200)
-//     .attr("cy", 50)
-//     .attr("r", 50) 
-//     .style("stroke", "000000")
-
+ d3.select('svg').append('circle') 
+    .attr("cx", Math.floor(Math.random() * 2000))
+    .attr("cy", Math.floor(Math.random() * 1000))
+    .attr("r", 14) 
+    .style("fill", neutro);
+}
