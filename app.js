@@ -11,6 +11,7 @@ var d3 = require("d3");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var viz = require('./routes/viz');
 
 var app = express();
 console.log("Starting");
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/viz', viz);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

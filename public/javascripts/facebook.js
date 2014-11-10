@@ -9,6 +9,8 @@ function statusChangeCallback(response) {
   if (response.status === 'connected') {
     // Logged into your app and Facebook.
     analizar();
+    // document.getElementById('texth3').innerHTML = 'Ahora dirígete al primer piso, aula 3';
+    
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
     document.getElementById('status').innerHTML = 'Please log ' +
@@ -16,8 +18,6 @@ function statusChangeCallback(response) {
   } else {
     // The person is not logged into Facebook, so we're not sure if
     // they are logged into this app or not.
-    document.getElementById('status').innerHTML = 'Please log ' +
-    'into Facebook.';
   }
 
 }
@@ -79,6 +79,7 @@ window.fbAsyncInit = function() {
     //   'Thanks for logging in, ' + response.name + '!';
     // });
 
+
 /* ==========================================================================
    Acá empieza la mágia
    ========================================================================== */
@@ -88,38 +89,9 @@ function analizar() {
 //Profile pic
 FB.api("/me/picture?width=140&height=140",  function(response) {
   imgPerfilAD3(response.data.url);
-
 });
 
-  //Likes
-  // FB.api('/me/likes?fields=name&limit=999', function(response) {
-  //   var data = [];
-  //   for(var a=0; a<response.data.length;a++){
-  //     data.push(response.data[a].name);
-  //   }
-  //   socket.emit('analizar', data);
-  // });
-
-  // //Mensajes Feed 
-  // FB.api('/me/home?fields=message', function(response) {
-  //   for(var a=0; a<response.data.length;a++){
-  //     console.log('Los mensajes de tu feed son: ' + response.data[a].message);
-  //   }
-  // });
-
-  // //Mensajes Feed 
-  // FB.api('/me/home?fields=message', function(response) {
-  //   var data = [];
-  //   for(var i=0; i<response.data.length;i++){
-  //     if(typeof response.data[i].message !== "undefined"){ //Quito los post sin texto
-  //     // console.log('Los mensajes de tu feed son: ' + response.data[i].message);
-  //     data.push(response.data[i].message);
-  //     }
-  //   }
-  //   socket.emit('analizar', data);
-  // });
-
-var maximoDePaginas = 10;
+var maximoDePaginas = 1;
 var paginaActual = 1;
 
 function parsearUnaPagina(url){
