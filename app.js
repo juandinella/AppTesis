@@ -68,10 +68,8 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 //Seteo Socket.io
+
 var io = require('socket.io').listen(8079);
-
-
-//ACA INTENTO GUARDAR UN NICK Y NO ME SALIÓ
 
 io.sockets.on('connection', function (socket) {
  
