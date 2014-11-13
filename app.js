@@ -68,26 +68,13 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 //Seteo Socket.io
+
+
 var io = require('socket.io').listen(8079);
 
 
-//ACA INTENTO GUARDAR UN NICK Y NO ME SALIÓ
-
 io.sockets.on('connection', function (socket) {
-  console.log('Client conected');
-
-    socket.on('disconnect', function(){
-    console.log('Client disconnected');
-  });
-
-  socket.on('set_nickname',function(nickname, callback){
-    console.log('trying to set nickname ' + nickname);
-
-    callback(true)
-  });
-// HASTA ACÁ
-
-
+ 
   socket.emit('news', "Conectado");
   socket.on('analizar', function (data) {
     mensajes = [];
