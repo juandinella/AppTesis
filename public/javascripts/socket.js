@@ -1,4 +1,4 @@
-var socket = io.connect('https://lit-plateau-9030.herokuapp.com/:8079');
+var socket = io.connect('http://juandinella.com.ar:8079');
 
 socket.on('news', function (data) {
   console.log(data);
@@ -13,7 +13,8 @@ socket.on('devolverDatos', function (data) {
 
   for(var i = 0; i < mensajes.length; i++){
     console.log(score[i]);
-    dibujarCirculos();    
+    dibujarCirculos();
+
   }
 
   //Dibujo los circulos
@@ -35,6 +36,7 @@ socket.on('devolverDatos', function (data) {
   }
 
   circprinc();
+
 
   //Saco el promedio
   // function sacarPromedio(){

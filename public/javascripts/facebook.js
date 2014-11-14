@@ -9,7 +9,7 @@ function statusChangeCallback(response) {
   if (response.status === 'connected') {
     // Logged into your app and Facebook.
     analizar();
-    
+        
     // document.getElementById('texth3').innerHTML = 'Ahora dirígete al primer piso, aula 3';
     
   } else if (response.status === 'not_authorized') {
@@ -115,6 +115,7 @@ function parsearUnaPagina(url){
       paginaActual++;
     }
   });
+
 }
 
 function responseAArray(response){
@@ -125,9 +126,9 @@ function responseAArray(response){
     }
   }
   socket.emit('analizar', data);
+
 }
 
 //Inicio!
 parsearUnaPagina("me/posts?fields=message&limit=999");
 } //Fin analizar
-

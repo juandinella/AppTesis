@@ -4,9 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var sentiment = require("sentiment");
-
 var d3 = require("d3");
 
 var routes = require('./routes/index');
@@ -68,11 +66,10 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 //Seteo Socket.io
-
 var io = require('socket.io').listen(8079);
 
 io.sockets.on('connection', function (socket) {
- 
+
   socket.emit('news', "Conectado");
   socket.on('analizar', function (data) {
     mensajes = [];
