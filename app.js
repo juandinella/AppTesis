@@ -70,7 +70,20 @@ var io = require('socket.io').listen(8079);
 
 io.sockets.on('connection', function (socket) {
 
-  socket.emit('news', "Conectado");
+  //Genero y mando un id de usuario alfanumerico aleatorio
+  var idUsuario = Math.random().toString(36).slice(2);
+  socket.emit('idUsuario', idUsuario);
+
+  /*
+   * Recibo la foto y la envio a la viz
+   */
+  socket.on('nuevoUser', function (foto) {
+    io.sockets.emit('devolverFoto', {usuario: idUsuario, foto: foto});
+  });
+
+  /*
+   * Recibo toda la data del feed y envio los scores correspondientes a la viz
+   */
   socket.on('analizar', function (data) {
     mensajes = [];
     score = [];
@@ -83,7 +96,9 @@ io.sockets.on('connection', function (socket) {
 
         score[score.length] = sco;
     };
-    
-    socket.emit('devolverDatos', {mensajes: mensajes, score: score});
+    io.sockets.emit('devolverDatos', {mensajes: mensajes, score: score, usuario: idUsuario});
   });
+
+
+
 });

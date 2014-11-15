@@ -21,9 +21,8 @@ var Renderizador = new function(){
     this.gFoto      = d3.select('svg').append('g');
     this.defs = this.svg.append('svg:defs');
 
-  this.usuario1X = Math.floor(Math.random() * 1200);
-  this.usuario1Y = Math.floor(Math.random() * 700);
-
+  //Placeholder para guardar IDs y sus ubicaciones
+  this.usuarios = {};
 
   /*
    ******************************
@@ -34,65 +33,74 @@ var Renderizador = new function(){
   /*
    * Creo el borde de la foto(circulos del fondo)
    */
-  this.renderBordeFoto = function () {
+  this.renderBordeFoto = function (usuario) {
+    var cx = Renderizador.usuarios[usuario].cx,
+        cy = Renderizador.usuarios[usuario].cy,
+        circulosExteriores = [84,94,104];
+
     //Círculo relleno
     Renderizador.gFondo.append('circle')
-      .attr('cx', Renderizador.usuario1X)
-      .attr('cy', Renderizador.usuario1Y)
+      .attr('cx', cx)
+      .attr('cy', cy)
       .attr('r', 74) 
       .style('fill', '#aab2bd');
 
     //Circulos exteriores (solo borde)
-    Renderizador.gFondo.selectAll('circle.exteriores')
-      .data([84, 94, 104])
-      .enter()
-      .append('circle')
-      .attr('class','exteriores')
-      .attr('cx', Renderizador.usuario1X)
-      .attr('cy', Renderizador.usuario1Y)
-      .attr('stroke-width', 1)
-      .attr('stroke', '#aab2bd')
-      .style('fill', 'none')
-      .attr('r', function(d) { return (d); });
+    for (var i = 0;  i < circulosExteriores.length; i++) {  
+      Renderizador.gFondo.append('circle')
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('stroke-width', 1)
+        .attr('stroke', '#aab2bd')
+        .style('fill', 'none')
+        .attr('r', circulosExteriores[i]);
+    };
 
   } //Fin renderBordeFoto
 
   /*
    * Muestro la imagen del perfil
    */
-  this.renderFoto = function(imagen){
+  this.renderFoto = function(imagen, usuario){
+    var cx = Math.floor(Math.random() * 1200);
+    var cy = Math.floor(Math.random() * 700);
+
+    Renderizador.usuarios[usuario] = {'cx': cx, 'cy': cy};
     //Creo la mascara
     Renderizador.defs.append('svg:clipPath')
       .attr('id', 'mascara')
       .append('svg:circle')
       .attr('width', 140)
       .attr('height', 140)
-      .attr('cx', Renderizador.usuario1X)
-      .attr('cy', Renderizador.usuario1Y)
+      .attr('cx', cx)
+      .attr('cy', cy)
       .attr('r', 64)
 
-    Renderizador.gFoto.selectAll('image')
-      .data([0])
-      .enter()
+    Renderizador.gFoto
       .append('svg:image')
       .attr('xlink:href', imagen)
       .attr('width', 140)
       .attr('height', 140)
-      .attr('x', Renderizador.usuario1X - 70)
-      .attr('y',Renderizador.usuario1Y - 70)
+      .attr('x', cx - 70)
+      .attr('y', cy - 70)
       .attr('clip-path', 'url(#mascara)'); //Aplico la mascara
+
+      Renderizador.renderBordeFoto(usuario);
   } //Fin renderFoto
 
   /*
    * Dibujo todos los circulos
    */
-  this.renderCirculos = function(scores){
+  this.renderCirculos = function(scores, usuario){
 
     //Para cada circulo
     for (i = 0; i < scores.length; ++i) {
       var score = scores[i];
       var randomX = Math.floor(Math.random() * 1260),
-          randomY = Math.floor(Math.random() * 780);
+          randomY = Math.floor(Math.random() * 780),
+          cx = Renderizador.usuarios[usuario].cx,
+          cy = Renderizador.usuarios[usuario].cy;
+
 
       if(score > 0){
         Renderizador.gEmociones.append('svg:image')
@@ -125,8 +133,8 @@ var Renderizador = new function(){
       }
 
       Renderizador.gEmociones.append('line')
-        .attr('x1', Renderizador.usuario1X)
-        .attr('y1', Renderizador.usuario1Y)
+        .attr('x1', cx)
+        .attr('y1', cy)
         .attr('x2', randomX + 10)
         .attr('y2', randomY + 10)
         .attr('stroke-width', 1)
