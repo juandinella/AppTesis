@@ -114,8 +114,8 @@ var Renderizador = new function(){
         var colorLinea = '#db4453';
       } else {
         Renderizador.gEmociones.append('circle') 
-          .attr('cx', randomX)
-          .attr('cy', randomY)
+          .attr('cx', randomX +10)
+          .attr('cy', randomY +10)
           .attr('r', 8) 
           .style('fill', '#ffce55')
           .attr('stroke-width', 1)

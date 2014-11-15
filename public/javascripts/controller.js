@@ -20,14 +20,7 @@ function inicio(){
 
   socket.on('devolverDatos', function (data) {
     console.log(data);
-    var datos = document.getElementById("datos");
-    datos.innerHTML = "";
-    var mensajes = data.mensajes;
     var score = data.score;
-
-    for(var i = 0; i < mensajes.length; i++){
-      console.log(score[i]);
-      //dibujarCirculos();
-    }
+    Renderizador.renderCirculos(score);
   });
 }
