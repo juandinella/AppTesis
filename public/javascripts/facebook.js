@@ -1,21 +1,13 @@
 // This is called with the results from from FB.getLoginStatus().
 function statusChangeCallback(response) {
-  console.log('statusChangeCallback');
-  console.log(response);
   // The response object is returned with a status field that lets the
   // app know the current login status of the person.
-  // Full docs on the response object can be found in the documentation
-  // for FB.getLoginStatus().
   if (response.status === 'connected') {
-    // Logged into your app and Facebook.
-    analizar();
-        
-    // document.getElementById('texth3').innerHTML = 'Ahora dirígete al primer piso, aula 3';
-    
+    //Que hacemo cuando ya está logeado?
+
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
-    document.getElementById('status').innerHTML = 'Please log ' +
-    'into this app.';
+    document.getElementById('status').innerHTML = 'Please log into this app.';
   } else {
     // The person is not logged into Facebook, so we're not sure if
     // they are logged into this app or not.
@@ -29,6 +21,9 @@ function statusChangeCallback(response) {
 function checkLoginState() {
   FB.getLoginStatus(function(response) {
     statusChangeCallback(response);
+
+    //Termino de cargar el SDK; llamo a la funcion madre de controller.js
+    inicio();
   });
 }
 
@@ -53,10 +48,7 @@ window.fbAsyncInit = function() {
   //
   // These three cases are handled in the callback function.
 
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-
+  checkLoginState();
 };
 
 // Load the SDK asynchronously
@@ -68,67 +60,66 @@ window.fbAsyncInit = function() {
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
-  // Here we run a very simple test of the Graph API after login is
-  // successful.  See statusChangeCallback() for when this call is made.
+/*
+ * Terminamos con la inicialización, conexión y login.
+ * Ahora preparamos las funciones de acuerdo a la lógica de nuestra APP
+ */
 
-  //Esto tiraba error
-    // console.log('Welcome!  Fetching your information.... ');
+//Creo una clase singleton/objeto
+var FacebookData = new function(){
 
-    // FB.api('/me', function(response) {
-    //   console.log('Successful login for: ' + response.name);
-    //   document.getElementById('status').innerHTML =
-    //   'Thanks for logging in, ' + response.name + '!';
-    // });
+  //Variables a usar al paginar los posts
+  this.maximoDePaginas = 1; //Cuantas paginas de posts parsear como maximo
+  this.paginaActual = 1; //Contador de pagina actual
+  this.mensajes = []; //Array donde guardo todos los mensajes
 
-
-/* ==========================================================================
-   Acá empieza la mágia
-   ========================================================================== */
-
-function analizar() {
-
-//Profile pic
-FB.api("/me/picture?width=140&height=140",  function(response) {
-  imgPerfilAD3(response.data.url);
-});
-
-var maximoDePaginas = 1;
-var paginaActual = 1;
-
-function parsearUnaPagina(url){
-  //Mensajes de Timeline Propio 
-  console.log("Voy a parsear " + url);
-  FB.api(url, function(response) {
-    console.log(response);
-    if(response.data.length > 0 && paginaActual <= maximoDePaginas){
-      //Transformo y emito con socketio
-      responseAArray(response);
-
-      //Url de la pagina siguiente
-      var urlNext = response.paging.next;
-      console.log("urlNext raw: " + urlNext);
-      //Borro la parte de "https://graph.facebook.com/v2.1"
-      urlNext = urlNext.substring(31);
-      console.log("urlNext substring: ");
-      console.log(urlNext);
-      parsearUnaPagina(urlNext);
-      paginaActual++;
-    }
-  });
-
-}
-
-function responseAArray(response){
-  var data = [];
-  for(var i=0; i<response.data.length;i++){
-    if(typeof response.data[i].message !== "undefined"){
-      data.push(response.data[i].message);
-    }
+  /*
+   * Obtengo la url de la Profile pic,
+   * y la paso como parametro a la funcion del callback
+   */
+  this.traerFoto = function(callback){
+    FB.api("/me/picture?width=140&height=140",  function(response) {
+       callback(response.data.url);
+    });
   }
-  socket.emit('analizar', data);
 
-}
+  /*
+   * Funcion que trae una pagina y decide si llamar a la pagina siguiente
+   * Una vez que termina, llama al callback.
+   */
+  this.parsearUnaPagina = function(url, callback){
+    FB.api(url, function(response) {
+      //Si esta pagina tuvo resultados, y todavia no supere al maximo de paginas
+      if(response.data.length > 0 && FacebookData.paginaActual <= FacebookData.maximoDePaginas){
+        //Parseo esta respuesta a un array
+        var data = FacebookData.responseAArray(response);
 
-//Inicio!
-parsearUnaPagina("me/posts?fields=message&limit=999");
-} //Fin analizar
+        //La uno al array de mensajes
+        FacebookData.mensajes = FacebookData.mensajes.concat(data);
+
+        FacebookData.paginaActual++; //Incremento el contador
+
+        /*
+         * Llamo a la proxima ejecución
+         */
+        var urlNext = response.paging.next; //Extraigo la url
+        urlNext = urlNext.substring(31); //Elimino la parte de "https://graph.facebook.com/v2.1"
+        FacebookData.parsearUnaPagina(urlNext, callback);
+      }else{
+        //Termino
+        callback(FacebookData.mensajes);
+      }
+    });
+  }
+
+  //Agrego a un array los resultados que estén en esta response
+  this.responseAArray = function(response){
+    var arrayResultados = [];
+    for(var i=0; i<response.data.length;i++){
+      if(typeof response.data[i].message !== "undefined"){
+        arrayResultados.push(response.data[i].message);
+      }
+    }
+    return arrayResultados;
+  }
+} //Fin FacebookData
