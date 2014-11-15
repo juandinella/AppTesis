@@ -3,7 +3,7 @@ function statusChangeCallback(response) {
   // The response object is returned with a status field that lets the
   // app know the current login status of the person.
   if (response.status === 'connected') {
-    //Que hacemo cuando ya está logeado?
+    $("#texth3").text('Texto cuando ya estás logeado');
 
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
