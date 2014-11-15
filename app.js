@@ -75,10 +75,19 @@ io.sockets.on('connection', function (socket) {
   socket.emit('idUsuario', idUsuario);
 
   /*
+   * Quienes se subscriban como viz recibiran los nuevos users o datos
+   */
+  socket.on('subscripcionViz', function (a) {
+    socket.join('viz');
+    socket.emit('news','Subscripto como viz');
+  });
+
+  /*
    * Recibo la foto y la envio a la viz
    */
   socket.on('nuevoUser', function (foto) {
-    io.sockets.emit('devolverFoto', {usuario: idUsuario, foto: foto});
+    io.sockets.in('viz').emit('news','Nuevo User!');
+    io.sockets.in('viz').emit('devolverFoto', {usuario: idUsuario, foto: foto});
   });
 
   /*
@@ -96,7 +105,7 @@ io.sockets.on('connection', function (socket) {
 
         score[score.length] = sco;
     };
-    io.sockets.emit('devolverDatos', {mensajes: mensajes, score: score, usuario: idUsuario});
+    io.sockets.in('viz').emit('devolverDatos', {mensajes: mensajes, score: score, usuario: idUsuario});
   });
 
 
