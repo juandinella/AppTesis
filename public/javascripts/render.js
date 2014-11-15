@@ -3,11 +3,8 @@ var Renderizador = new function(){
   /*
    * Defino las variables de configuración
    */
-  this.width = 1200, //Ancho del SVG
-  this.height = 400, //Alto del SVG
-  this.negativo = '#d34055', // Color negativo
-  this.neutro = '#ffce55', // Color neutro
-  this.positivo = '#a0d468'; // Color positivo
+  this.width = 1200; //Ancho del SVG
+  this.height = 400; //Alto del SVG
   
 
   /*
@@ -19,12 +16,12 @@ var Renderizador = new function(){
     .attr('height', this.height)
     .style('background', '#454954')
     .style('border', '2px solid #656d78');
-    this.gFondo     = d3.select('svg').append('g'),
-    this.gEmociones = d3.select('svg').append('g'),
+    this.gEmociones = d3.select('svg').append('g');
+    this.gFondo     = d3.select('svg').append('g');
     this.gFoto      = d3.select('svg').append('g');
     this.defs = this.svg.append('svg:defs');
 
-  this.usuario1X = Math.floor(Math.random() * 1200),
+  this.usuario1X = Math.floor(Math.random() * 1200);
   this.usuario1Y = Math.floor(Math.random() * 700);
 
 
@@ -43,7 +40,7 @@ var Renderizador = new function(){
       .attr('cx', Renderizador.usuario1X)
       .attr('cy', Renderizador.usuario1Y)
       .attr('r', 74) 
-      .style('fill', '#aab2bd')
+      .style('fill', '#aab2bd');
 
     //Circulos exteriores (solo borde)
     Renderizador.gFondo.selectAll('circle.exteriores')
@@ -74,8 +71,6 @@ var Renderizador = new function(){
       .attr('cy', Renderizador.usuario1Y)
       .attr('r', 64)
 
-
-
     Renderizador.gFoto.selectAll('image')
       .data([0])
       .enter()
@@ -87,75 +82,56 @@ var Renderizador = new function(){
       .attr('y',Renderizador.usuario1Y - 70)
       .attr('clip-path', 'url(#mascara)'); //Aplico la mascara
   } //Fin renderFoto
-}
 
+  /*
+   * Dibujo todos los circulos
+   */
+  this.renderCirculos = function(scores){
 
+    //Para cada circulo
+    for (i = 0; i < scores.length; ++i) {
+      var score = scores[i];
+      var randomX = Math.floor(Math.random() * 1260),
+          randomY = Math.floor(Math.random() * 780);
 
-//Creo <3 positivos
-function circPos(){
-  var randomX = Math.floor(Math.random() * 1260);
-  var randomY = Math.floor(Math.random() * 780);
+      if(score > 0){
+        Renderizador.gEmociones.append('svg:image')
+            .attr('xlink:href', '../images/corazon.svg')
+            .attr('width', 16)
+            .attr('height', 14)
+            .attr('x', randomX)
+            .attr('y', randomY);
 
-  var h= 14;
-  var w = 16;
+        var colorLinea = '#8cc051';
+      } else if(score < 0){
+        Renderizador.gEmociones.append('svg:image')
+          .attr('xlink:href', '../images/cruz.svg')
+          .attr('width', 16)
+          .attr('height', 14)
+          .attr('x', randomX)
+          .attr('y', randomY);
 
-  var img = gEmociones.append('svg:image')
-    .attr('xlink:href', '../images/corazon.svg')
-    .attr('width', w)
-    .attr('height', h)
-    .attr('x', randomX)
-    .attr('y', randomY);
+        var colorLinea = '#db4453';
+      } else {
+        Renderizador.gEmociones.append('circle') 
+          .attr('cx', randomX)
+          .attr('cy', randomY)
+          .attr('r', 8) 
+          .style('fill', '#ffce55')
+          .attr('stroke-width', 1)
+          .attr('stroke', '#f7b94a');
 
-    gEmociones.append('line')
-      .attr('x1', this.usuario1X)
-      .attr('y1', this.usuario1Y)
-      .attr('x2', randomX + 10)
-      .attr('y2', randomY + 10)
-      .attr('stroke-width', 1)
-      .attr('stroke', '#8cc051'); 
-}
+        var colorLinea = '#f9dfa5';
+      }
 
+      Renderizador.gEmociones.append('line')
+        .attr('x1', Renderizador.usuario1X)
+        .attr('y1', Renderizador.usuario1Y)
+        .attr('x2', randomX + 10)
+        .attr('y2', randomY + 10)
+        .attr('stroke-width', 1)
+        .attr('stroke', colorLinea); 
 
-//Creo X negativos
-function circNeg(){
-  var randomX = Math.floor(Math.random() * 1260);
-  var randomY = Math.floor(Math.random() * 780);
-
-  gEmociones.append('svg:image')
-    .attr('xlink:href', '../images/cruz.svg')
-    .attr('width', 16)
-    .attr('height', 14)
-    .attr('x', randomX)
-    .attr('y', randomY);
-
-  gEmociones.append('line')
-    .attr('x1', this.usuario1X)
-    .attr('y1', this.usuario1Y)
-    .attr('x2', randomX + 10)
-    .attr('y2', randomY + 10)
-    .attr('stroke-width', 1)
-    .attr('stroke', '#db4453'); 
-}
-
-
-//Creo circulos neutros
-function circNeu(){
-  var randomX = Math.floor(Math.random() * 1260);
-  var randomY = Math.floor(Math.random() * 780);
-
-  gEmociones.append('circle') 
-    .attr('cx', randomX)
-    .attr('cy', randomY)
-    .attr('r', 8) 
-    .style('fill', neutro)
-    .attr('stroke-width', 1)
-    .attr('stroke', '#f7b94a');
-
-  gEmociones.append('line')
-    .attr('x1', this.usuario1X)
-    .attr('y1', this.usuario1Y)
-    .attr('x2', randomX)
-    .attr('y2', randomY)
-    .attr('stroke-width', 1)
-    .attr('stroke', '#f9dfa5');   
+    }//Fin For scores
+  }
 }
