@@ -8,7 +8,7 @@ var Renderizador = new function(){
   
 
   /*
-   * Creo el SVG, los 3 layers y el placeholder para defs
+   * Creo el SVG, los 4 layers y el placeholder para defs
    */
   this.svg = d3.select('#viz')
     .append('svg')
@@ -16,6 +16,7 @@ var Renderizador = new function(){
     .attr('height', this.height)
     .style('background', '#454954')
     .style('border', '2px solid #656d78');
+    this.gLineasEmociones = d3.select('svg').append('g');
     this.gEmociones = d3.select('svg').append('g');
     this.gFondo     = d3.select('svg').append('g');
     this.gFoto      = d3.select('svg').append('g');
@@ -94,12 +95,13 @@ var Renderizador = new function(){
   this.renderCirculos = function(scores, usuario){
 
     //Para cada circulo
+    console.log(scores);
     for (i = 0; i < scores.length; ++i) {
       var score = scores[i];
-      var randomX = Math.floor(Math.random() * 1260),
-          randomY = Math.floor(Math.random() * 780),
-          cx = Renderizador.usuarios[usuario].cx,
+      var cx = Renderizador.usuarios[usuario].cx,
           cy = Renderizador.usuarios[usuario].cy;
+
+      var random = Renderizador.randomCirculo(cx,cy);
 
 
       if(score > 0){
@@ -107,39 +109,64 @@ var Renderizador = new function(){
             .attr('xlink:href', '../images/corazon.svg')
             .attr('width', 16)
             .attr('height', 14)
-            .attr('x', randomX)
-            .attr('y', randomY);
+            .attr('x', random.X)
+            .attr('y', random.Y);
 
         var colorLinea = '#8cc051';
+        var modifPos = 10;
       } else if(score < 0){
         Renderizador.gEmociones.append('svg:image')
           .attr('xlink:href', '../images/cruz.svg')
           .attr('width', 16)
           .attr('height', 14)
-          .attr('x', randomX)
-          .attr('y', randomY);
+          .attr('x', random.X)
+          .attr('y', random.Y);
 
         var colorLinea = '#db4453';
+        var modifPos = 10;
       } else {
         Renderizador.gEmociones.append('circle') 
-          .attr('cx', randomX +10)
-          .attr('cy', randomY +10)
+          .attr('cx', random.X)
+          .attr('cy', random.Y)
           .attr('r', 8) 
           .style('fill', '#ffce55')
           .attr('stroke-width', 1)
           .attr('stroke', '#f7b94a');
 
         var colorLinea = '#f9dfa5';
+        var modifPos = 0;
       }
 
-      Renderizador.gEmociones.append('line')
+      Renderizador.gLineasEmociones.append('line')
         .attr('x1', cx)
         .attr('y1', cy)
-        .attr('x2', randomX + 10)
-        .attr('y2', randomY + 10)
+        .attr('x2', random.X + modifPos)
+        .attr('y2', random.Y + modifPos)
         .attr('stroke-width', 1)
         .attr('stroke', colorLinea); 
 
     }//Fin For scores
   }
+
+  /*
+   * Funcion helper para generar un numero random que quede cerca del circulo, 
+   * pero no dentro del mismo
+   */
+  this.randomCirculo = function(cx,cy){
+    var r1 = 120; //Radio del circulo externo, limite hasta donde debe haber fotos
+    var r2 = 84; //Radio del circulo interno, donde NO debe haber puntos (la foto)
+
+    //Primero genero un punto random en un cuadrado que inscriba al circulo mayor
+    do{
+      console.log("Trying to find a point");
+      randCx= Math.floor(Math.random() * (2*r1 + 1)) - r1;
+      randCy= Math.floor(Math.random() * (2*r1 + 1)) - r1;
+      distToCenter = Math.sqrt( Math.pow(randCx,2) + Math.pow(randCy,2) );
+    }
+    while( distToCenter > r1 || distToCenter < r2);
+
+    var respuesta = {'X': cx+randCx, 'Y': cy+randCy};
+    return respuesta;
+  }
+
 }

@@ -8,6 +8,7 @@ $(function() {
   socket = io.connect('http://juandinella.com.ar:8079');
   
   socket.on('devolverDatos', function (data) {
+    console.log('Datos!');
     Renderizador.renderCirculos(data.score, data.usuario);
   });
 
