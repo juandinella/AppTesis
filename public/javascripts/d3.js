@@ -28,9 +28,9 @@ defs.append('svg:clipPath')
   .attr('cy', usuario1Y)
   .attr('r', 64)
 
-var seccion = d3.select('svg')
-  .append('g')
-  .attr('class', 'seccion')
+var gFondo = d3.select('svg').append('g');
+var gEmociones = d3.select('svg').append('g');
+var gFoto = d3.select('svg').append('g');
 
 
 //Creo <3 positivos
@@ -38,19 +38,17 @@ function circPos(){
   var randomX = Math.floor(Math.random() * 1260);
   var randomY = Math.floor(Math.random() * 780);
 
-  var g = svg.select('g');
-
   var h= 14;
   var w = 16;
 
-  var img = g.append('svg:image')
+  var img = gEmociones.append('svg:image')
     .attr('xlink:href', '../images/corazon.svg')
     .attr('width', w)
     .attr('height', h)
     .attr('x', randomX)
     .attr('y', randomY);
 
-    d3.select('g').append('line')
+    gEmociones.append('line')
       .attr('x1', usuario1X)
       .attr('y1', usuario1Y)
       .attr('x2', randomX + 10)
@@ -65,22 +63,20 @@ function circNeg(){
   var randomX = Math.floor(Math.random() * 1260);
   var randomY = Math.floor(Math.random() * 780);
 
-  var g = svg.select('g');
-
-  var img = g.append('svg:image')
+  gEmociones.append('svg:image')
     .attr('xlink:href', '../images/cruz.svg')
     .attr('width', 16)
     .attr('height', 14)
     .attr('x', randomX)
     .attr('y', randomY);
 
-    d3.select('g').append('line')
-      .attr('x1', usuario1X)
-      .attr('y1', usuario1Y)
-      .attr('x2', randomX + 10)
-      .attr('y2', randomY + 10)
-      .attr('stroke-width', 1)
-      .attr('stroke', '#db4453'); 
+  gEmociones.append('line')
+    .attr('x1', usuario1X)
+    .attr('y1', usuario1Y)
+    .attr('x2', randomX + 10)
+    .attr('y2', randomY + 10)
+    .attr('stroke-width', 1)
+    .attr('stroke', '#db4453'); 
 }
 
 
@@ -89,7 +85,7 @@ function circNeu(){
   var randomX = Math.floor(Math.random() * 1260);
   var randomY = Math.floor(Math.random() * 780);
 
- d3.select('g').append('circle') 
+  gEmociones.append('circle') 
     .attr('cx', randomX)
     .attr('cy', randomY)
     .attr('r', 8) 
@@ -97,25 +93,25 @@ function circNeu(){
     .attr('stroke-width', 1)
     .attr('stroke', '#f7b94a');
 
-    d3.select('g').append('line')
-      .attr('x1', usuario1X)
-      .attr('y1', usuario1Y)
-      .attr('x2', randomX)
-      .attr('y2', randomY)
-      .attr('stroke-width', 1)
-      .attr('stroke', '#f9dfa5');   
+  gEmociones.append('line')
+    .attr('x1', usuario1X)
+    .attr('y1', usuario1Y)
+    .attr('x2', randomX)
+    .attr('y2', randomY)
+    .attr('stroke-width', 1)
+    .attr('stroke', '#f9dfa5');   
 }
 
 function circprinc(){
   //círculo principal   
-  d3.select('g').append('circle') 
+  gFondo.append('circle') 
     .attr('cx', usuario1X)
     .attr('cy', usuario1Y)
     .attr('r', 74) 
     .style('fill', '#aab2bd')
 
   //círculos sobre imagen  
-  var circle = svg.select('g').selectAll('circle')
+  var circle = gFondo.selectAll('circle')
     .data([84, 94, 104], function(d) { return d; });
 
   circle.enter().append('circle')
@@ -129,7 +125,7 @@ function circprinc(){
 
 //Traigo la imagen 
 function imgPerfilAD3(imagen){
-  var imgs = svg.select('g').selectAll('image').data([0]);
+  var imgs = gFoto.selectAll('image').data([0]);
 
   imgs.enter()
     .append('svg:image')
