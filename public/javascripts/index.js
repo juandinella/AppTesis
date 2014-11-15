@@ -1,6 +1,6 @@
 // Cuando termina de cargar la FB SDK se corre esta funcion.
 function inicio(){  
-  FacebookData.parsearUnaPagina( "me/posts?fields=message&limit=999", function(data){
+  FacebookData.parsearUnaPagina( "me/posts?fields=message&limit=50", function(data){
     socket.emit('analizar', data);
   });
   FacebookData.traerFoto(function(foto){

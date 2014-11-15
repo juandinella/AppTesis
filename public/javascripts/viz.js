@@ -20,4 +20,8 @@ $(function() {
     Renderizador.renderFoto(data.foto, data.usuario);
   });
 
+  socket.on('desconectado', function (usuario) {
+    Renderizador.borrarUsuario(usuario);
+  });
+
 });

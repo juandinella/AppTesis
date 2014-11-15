@@ -41,14 +41,16 @@ var Renderizador = new function(){
 
     //Círculo relleno
     Renderizador.gFondo.append('circle')
+      .attr('data-usuario', usuario)
       .attr('cx', cx)
       .attr('cy', cy)
-      .attr('r', 74) 
+      .attr('r', 74)
       .style('fill', '#aab2bd');
 
     //Circulos exteriores (solo borde)
     for (var i = 0;  i < circulosExteriores.length; i++) {  
       Renderizador.gFondo.append('circle')
+        .attr('data-usuario', usuario)
         .attr('cx', cx)
         .attr('cy', cy)
         .attr('stroke-width', 1)
@@ -71,6 +73,7 @@ var Renderizador = new function(){
     Renderizador.defs.append('svg:clipPath')
       .attr('id', 'mascara')
       .append('svg:circle')
+      .attr('data-usuario', usuario)
       .attr('width', 140)
       .attr('height', 140)
       .attr('cx', cx)
@@ -79,6 +82,7 @@ var Renderizador = new function(){
 
     Renderizador.gFoto
       .append('svg:image')
+      .attr('data-usuario', usuario)
       .attr('xlink:href', imagen)
       .attr('width', 140)
       .attr('height', 140)
@@ -95,7 +99,6 @@ var Renderizador = new function(){
   this.renderCirculos = function(scores, usuario){
 
     //Para cada circulo
-    console.log(scores);
     for (i = 0; i < scores.length; ++i) {
       var score = scores[i];
       var cx = Renderizador.usuarios[usuario].cx,
@@ -106,16 +109,18 @@ var Renderizador = new function(){
 
       if(score > 0){
         Renderizador.gEmociones.append('svg:image')
+            .attr('data-usuario', usuario)
             .attr('xlink:href', '../images/corazon.svg')
             .attr('width', 16)
             .attr('height', 14)
             .attr('x', random.X)
-            .attr('y', random.Y);
+            .attr('y', random.Y)
 
         var colorLinea = '#8cc051';
         var modifPos = 10;
       } else if(score < 0){
         Renderizador.gEmociones.append('svg:image')
+          .attr('data-usuario', usuario)
           .attr('xlink:href', '../images/cruz.svg')
           .attr('width', 16)
           .attr('height', 14)
@@ -125,7 +130,8 @@ var Renderizador = new function(){
         var colorLinea = '#db4453';
         var modifPos = 10;
       } else {
-        Renderizador.gEmociones.append('circle') 
+        Renderizador.gEmociones.append('circle')
+          .attr('data-usuario', usuario)
           .attr('cx', random.X)
           .attr('cy', random.Y)
           .attr('r', 8) 
@@ -138,6 +144,7 @@ var Renderizador = new function(){
       }
 
       Renderizador.gLineasEmociones.append('line')
+        .attr('data-usuario', usuario)
         .attr('x1', cx)
         .attr('y1', cy)
         .attr('x2', random.X + modifPos)
@@ -147,6 +154,14 @@ var Renderizador = new function(){
 
     }//Fin For scores
   }
+
+  /*
+   * Borro circulo, borde y emociones para un usuario
+   */
+  this.borrarUsuario = function(usuario){
+    $("[data-usuario='" +usuario+"']").fadeOut();
+    delete Renderizador.usuarios[usuario];
+  };
 
   /*
    * Funcion helper para generar un numero random que quede cerca del circulo, 
