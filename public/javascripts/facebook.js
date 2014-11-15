@@ -29,11 +29,11 @@ function checkLoginState() {
 
 window.fbAsyncInit = function() {
   FB.init({
-    appId      : '740789665959022',
+    appId      : '646041065454204',
     cookie     : true,  // enable cookies to allow the server to access
                 // the session
     xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.1' // use version 2.1
+    version    : 'v1.0' // use version 1.0
   });
 
   checkLoginState();
