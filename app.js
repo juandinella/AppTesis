@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var sentiment = require("sentiment");
 var d3 = require("d3");
 
+var server = require('http').Server(app);
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var viz = require('./routes/viz');
@@ -67,7 +69,8 @@ module.exports = app;
 
 //Seteo Socket.io
 
-var io = require('socket.io').listen(8079);
+//var io = require('socket.io').listen(8079);
+var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket) {
     var idUsuario;

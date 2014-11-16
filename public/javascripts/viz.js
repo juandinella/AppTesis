@@ -6,7 +6,8 @@ function inicio(){
 var socket;
 $(function() {
 
-  socket = io.connect('https://safe-depths-8628.herokuapp.com:8079');
+  // socket = io.connect('https://safe-depths-8628.herokuapp.com:8079');
+  socket = io.connect('http://localhost');
 
   socket.emit('subscripcionViz','');
 
