@@ -67,7 +67,7 @@ module.exports = app;
 
 //Seteo Socket.io
 
-var io = require('socket.io').listen(app);
+var io = require('socket.io').listen(8079);
 
 io.sockets.on('connection', function (socket) {
     var idUsuario;
