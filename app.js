@@ -69,36 +69,48 @@ module.exports = app;
 var io = require('socket.io').listen(8079);
 
 io.sockets.on('connection', function (socket) {
+    var idUsuario;
 
-  //Genero y mando un id de usuario alfanumerico aleatorio
-  var idUsuario = Math.random().toString(36).slice(2);
-  socket.emit('idUsuario', idUsuario);
+    /*
+    * Quienes se subscriban como viz recibiran los nuevos users o datos
+    */
+    socket.on('subscripcionViz', function (a) {
+    socket.join('viz');
+    socket.emit('news','Subscripto como viz');
+    });
 
-  /*
-   * Recibo la foto y la envio a la viz
-   */
-  socket.on('nuevoUser', function (foto) {
-    io.sockets.emit('devolverFoto', {usuario: idUsuario, foto: foto});
-  });
+    /*
+    * Recibo la foto y la envio a la viz
+    */
+    socket.on('nuevoUser', function (foto) {
+        //Genero y envio un id de usuario alfanumerico aleatorio
+        idUsuario = Math.random().toString(36).slice(2);
+        socket.emit('idUsuario', idUsuario);
 
-  /*
-   * Recibo toda la data del feed y envio los scores correspondientes a la viz
-   */
-  socket.on('analizar', function (data) {
-    mensajes = [];
-    score = [];
-    for (i in data) {
-        mensajes[mensajes.length] = data[i];
-        var sco = 0;
-        sentiment(data[i], function (err, result) {
-            sco = result.score;
-        });
+        io.sockets.in('viz').emit('news','Nuevo User!');
+        io.sockets.in('viz').emit('devolverFoto', {usuario: idUsuario, foto: foto});
+    });
 
-        score[score.length] = sco;
-    };
-    io.sockets.emit('devolverDatos', {mensajes: mensajes, score: score, usuario: idUsuario});
-  });
+    /*
+    * Recibo toda la data del feed y envio los scores correspondientes a la viz
+    */
+    socket.on('analizar', function (data) {
+        score = [];
+        for (i in data) {
+            var sco = 0;
+            sentiment(data[i], function (err, result) {
+                sco = result.score;
+            });
 
+            score[score.length] = sco;
+        };
+        io.sockets.in('viz').emit('devolverDatos', {score: score, usuario: idUsuario});
+    });
 
+    socket.on('disconnect', function () {
+        if(typeof idUsuario != 'undefined'){
+            io.sockets.in('viz').emit('desconectado', idUsuario);
+        }
+    });
 
 });

@@ -57,9 +57,8 @@ window.fbAsyncInit = function() {
 var FacebookData = new function(){
 
   //Variables a usar al paginar los posts
-  this.maximoDePaginas = 1; //Cuantas paginas de posts parsear como maximo
+  this.maximoDePaginas = 5; //Cuantas paginas de posts parsear como maximo
   this.paginaActual = 1; //Contador de pagina actual
-  this.mensajes = []; //Array donde guardo todos los mensajes
 
   /*
    * Obtengo la url de la Profile pic,
@@ -82,8 +81,8 @@ var FacebookData = new function(){
         //Parseo esta respuesta a un array
         var data = FacebookData.responseAArray(response);
 
-        //La uno al array de mensajes
-        FacebookData.mensajes = FacebookData.mensajes.concat(data);
+        //Lo envio usando el callback
+        callback(data);
 
         FacebookData.paginaActual++; //Incremento el contador
 
@@ -93,9 +92,6 @@ var FacebookData = new function(){
         var urlNext = response.paging.next; //Extraigo la url
         urlNext = urlNext.substring(31); //Elimino la parte de "https://graph.facebook.com/v2.1"
         FacebookData.parsearUnaPagina(urlNext, callback);
-      }else{
-        //Termino
-        callback(FacebookData.mensajes);
       }
     });
   }

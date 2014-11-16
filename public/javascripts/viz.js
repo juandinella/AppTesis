@@ -5,16 +5,25 @@ function inicio(){
 }
 var socket;
 $(function() {
-  socket = io.connect('http://juandinella.com.ar:8079');
+
+  socket = io.connect('https://lit-plateau-9030.herokuapp.com:8079');
+
+  socket.emit('subscripcionViz','');
+
+  socket.on('news', function (data) {
+    console.log("[socket.io-News] " + data);
+  });
   
   socket.on('devolverDatos', function (data) {
-    console.log('Datos!');
     Renderizador.renderCirculos(data.score, data.usuario);
   });
 
   socket.on('devolverFoto', function (data) {
-    console.log("Nuevo user!");
     Renderizador.renderFoto(data.foto, data.usuario);
+  });
+
+  socket.on('desconectado', function (usuario) {
+    Renderizador.borrarUsuario(usuario);
   });
 
 });
