@@ -5,7 +5,7 @@ function inicio(){
 }
 var socket;
 $(function() {
-  socket = io.connect('http://juandinella.com.ar:8079');
+  socket = io.connect('http://juandinella.com.ar');
   socket.emit('subscripcionViz','');
 
   socket.on('news', function (data) {

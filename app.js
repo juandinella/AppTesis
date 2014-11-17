@@ -7,13 +7,12 @@ var bodyParser = require('body-parser');
 var sentiment = require("sentiment");
 var d3 = require("d3");
 
-var server = require('http').Server(app);
+var app = express();
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var viz = require('./routes/viz');
 
-var app = express();
 console.log("Starting");
 
 // view engine setup
@@ -69,7 +68,8 @@ module.exports = app;
 
 //Seteo Socket.io
 
-//var io = require('socket.io').listen(8079);
+var server = app.listen(process.env.PORT || 80);
+
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket) {
