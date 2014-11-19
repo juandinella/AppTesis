@@ -1,3 +1,11 @@
 #!/usr/bin/env node
 var debug = require('debug')('AppTesis');
 var app = require('../app');
+
+if (app.get('env') === 'development') {
+  var urlSitio = 'https://juandinella.com.ar';
+}else{
+  var urlSitio = 'https://safe-depths-8628.herokuapp.com';
+}
+
+console.log(app.get('env'));
