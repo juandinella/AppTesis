@@ -10,8 +10,7 @@ function inicio(){
 var socket;
 $(function() {
 
-  // socket = io.connect('https://safe-depths-8628.herokuapp.com');
-  socket = io.connect(urlSitio);
+  socket = io.connect('https://safe-depths-8628.herokuapp.com');
   //socket = io.connect('http://juandinella.com.ar');
   
   socket.on('news', function (data) {
