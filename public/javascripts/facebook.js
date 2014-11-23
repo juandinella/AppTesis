@@ -29,10 +29,8 @@ function checkLoginState() {
 
 window.fbAsyncInit = function() {
   FB.init({
-    appId      : '646041065454204', //ID Production
-    //appId      : '551762271562802', //ID Development
+    appId      : (document.domain == 'juandinella.com.ar') ? '551762271562802' : '646041065454204',
     cookie     : true,  // enable cookies to allow the server to access
-                // the session
     xfbml      : true,  // parse social plugins on this page
     version    : 'v1.0' // use version 1.0
   });
