@@ -15,7 +15,7 @@ var Renderizador = new function(){
     .append('svg')
     .attr('width', this.width)
     .attr('height', this.height)
-    .style('background', '#454954')
+    // .style('background', '#454954')
     .style('border', '2px solid #656d78');
     this.gLineasEmociones = d3.select('svg').append('g');
     this.gEmociones = d3.select('svg').append('g');
