@@ -42,7 +42,7 @@ var Renderizador = new function(){
         circulosExteriores = [radio+20,radio+30,radio+40];
 
     //Círculo relleno
-    Renderizador.gFondo.append('circle')
+    Renderizador.usuarios[usuario].bordeFoto = Renderizador.gFondo.append('circle')
       .attr('data-usuario', usuario)
       .attr('cx', cx)
       .attr('cy', cy)
@@ -88,13 +88,19 @@ var Renderizador = new function(){
           console.log("distancia: " + distanciaEntreCentros);
           if(distanciaEntreCentros < radio*2 + value.radio*2 ){
             encontrePosicion = false;
-            console.log("Descartada esa!");
           }
         }
       });
     }
 
-    Renderizador.usuarios[usuario] = {'cx': cx, 'cy': cy, 'radio': radio};
+    Renderizador.usuarios[usuario] = {
+      'cx': cx,
+      'cy': cy,
+      'radio': radio,
+      'cantNegativos' : 0,
+      'cantNeutrales' : 0,
+      'cantPositivos' : 0
+    };
   }
   /*
    * Muestro la imagen del perfil
@@ -149,6 +155,7 @@ var Renderizador = new function(){
 
       var random = Renderizador.randomCirculo(cx,cy,radio);
       if(score > 0){
+        Renderizador.usuarios[usuario].cantPositivos++;
         Renderizador.usuarios[usuario].gEmociones.append('svg:image')
             .attr('data-usuario', usuario)
             .attr('xlink:href', '../images/corazon.svg')
@@ -160,6 +167,7 @@ var Renderizador = new function(){
         var colorLinea = '#8cc051';
         var modifPos = 10;
       } else if(score < 0){
+        Renderizador.usuarios[usuario].cantNegativos++;
         Renderizador.usuarios[usuario].gEmociones.append('svg:image')
           .attr('data-usuario', usuario)
           .attr('xlink:href', '../images/cruz.svg')
@@ -171,6 +179,7 @@ var Renderizador = new function(){
         var colorLinea = '#db4453';
         var modifPos = 10;
       } else {
+        Renderizador.usuarios[usuario].cantNeutrales++;
         Renderizador.usuarios[usuario].gEmociones.append('circle')
           .attr('data-usuario', usuario)
           .attr('cx', random.X)
@@ -194,6 +203,43 @@ var Renderizador = new function(){
         .attr('stroke', colorLinea); 
 
     }//Fin For scores
+    Renderizador.colorBordeFoto(usuario);
+  }
+
+  /*
+   * Ajusto el color del borde de la foto de un usuario dependiendo de sus emociones
+   */
+  this.colorBordeFoto = function(usuario){
+    var dU = Renderizador.usuarios[usuario];
+    var bordeFoto = dU.bordeFoto;
+
+
+    var pct = ((dU.cantNegativos * -1 + dU.cantPositivos) / (dU.cantNeutrales + dU.cantPositivos+ dU.cantNegativos))/2+0.5;
+
+    var coloresSegunPorcentaje = [
+      { pct: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },
+      { pct: 0.5, color: { r: 255, g: 206, b: 85 } },
+      { pct: 1.0, color: { r: 0x00, g: 0xff, b: 0 } } 
+    ];
+
+    for (var i = 1; i < coloresSegunPorcentaje.length - 1; i++) {
+        if (pct < coloresSegunPorcentaje[i].pct) {
+            break;
+        }
+    }
+    var menor = coloresSegunPorcentaje[i - 1];
+    var mayor = coloresSegunPorcentaje[i];
+    var rango = mayor.pct - menor.pct;
+    var rangoPct = (pct - menor.pct) / rango;
+    var pctMenor = 1 - rangoPct;
+    var pctMayor = rangoPct;
+    var color = {
+        r: Math.floor(menor.color.r * pctMenor + mayor.color.r * pctMayor),
+        g: Math.floor(menor.color.g * pctMenor + mayor.color.g * pctMayor),
+        b: Math.floor(menor.color.b * pctMenor + mayor.color.b * pctMayor)
+    };
+    bordeFoto.style('fill','rgb(' + [color.r, color.g, color.b].join(',') + ')');
+    // or output as hex if preferred
   }
 
   /*
