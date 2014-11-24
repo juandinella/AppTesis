@@ -37,14 +37,15 @@ var Renderizador = new function(){
   this.renderBordeFoto = function (usuario) {
     var cx = Renderizador.usuarios[usuario].cx,
         cy = Renderizador.usuarios[usuario].cy,
-        circulosExteriores = [84,94,104];
+        radio = Renderizador.usuarios[usuario].radio,
+        circulosExteriores = [radio+20,radio+30,radio+40];
 
     //Círculo relleno
     Renderizador.gFondo.append('circle')
       .attr('data-usuario', usuario)
       .attr('cx', cx)
       .attr('cy', cy)
-      .attr('r', 74)
+      .attr('r', radio+10)
       .style('fill', '#aab2bd');
 
     //Circulos exteriores (solo borde)
@@ -67,8 +68,9 @@ var Renderizador = new function(){
   this.nuevoUsuario = function(usuario){
     var cx = Math.floor(Math.random() * 1200);
     var cy = Math.floor(Math.random() * 700);
+    var radio = Math.floor(Math.random()*(60-20+1)+40);
 
-    Renderizador.usuarios[usuario] = {'cx': cx, 'cy': cy};
+    Renderizador.usuarios[usuario] = {'cx': cx, 'cy': cy, 'radio': radio};
   }
   /*
    * Muestro la imagen del perfil
@@ -76,26 +78,27 @@ var Renderizador = new function(){
   this.renderFoto = function(imagen, usuario){
     var cx = Renderizador.usuarios[usuario].cx;
     var cy = Renderizador.usuarios[usuario].cy;
+    var radio = Renderizador.usuarios[usuario].radio;
 
     //Creo la mascara
     Renderizador.defs.append('svg:clipPath')
       .attr('id', 'mascara')
       .append('svg:circle')
       .attr('data-usuario', usuario)
-      .attr('width', 140)
-      .attr('height', 140)
+      .attr('width', radio*2+20)
+      .attr('height', radio*2+20)
       .attr('cx', cx)
       .attr('cy', cy)
-      .attr('r', 64)
+      .attr('r', radio)
 
     Renderizador.gFoto
       .append('svg:image')
       .attr('data-usuario', usuario)
       .attr('xlink:href', imagen)
-      .attr('width', 140)
-      .attr('height', 140)
-      .attr('x', cx - 70)
-      .attr('y', cy - 70)
+      .attr('width', radio*2+20)
+      .attr('height', radio*2+20)
+      .attr('x', cx - radio+6)
+      .attr('y', cy - radio+6)
       .attr('clip-path', 'url(#mascara)'); //Aplico la mascara
 
       Renderizador.usuarios[usuario].visible = true;
@@ -116,9 +119,10 @@ var Renderizador = new function(){
     for (i = 0; i < scores.length; ++i) {
       var score = scores[i];
       var cx = Renderizador.usuarios[usuario].cx,
-          cy = Renderizador.usuarios[usuario].cy;
+          cy = Renderizador.usuarios[usuario].cy,
+          radio = Renderizador.usuarios[usuario].radio;
 
-      var random = Renderizador.randomCirculo(cx,cy);
+      var random = Renderizador.randomCirculo(cx,cy,radio);
       if(score > 0){
         Renderizador.usuarios[usuario].gEmociones.append('svg:image')
             .attr('data-usuario', usuario)
@@ -191,9 +195,9 @@ var Renderizador = new function(){
    * Funcion helper para generar un numero random que quede cerca del circulo, 
    * pero no dentro del mismo
    */
-  this.randomCirculo = function(cx,cy){
-    var r1 = 120; //Radio del circulo externo, limite hasta donde debe haber fotos
-    var r2 = 84; //Radio del circulo interno, donde NO debe haber puntos (la foto)
+  this.randomCirculo = function(cx,cy, radio){
+    var r1 = radio+60; //Radio del circulo externo, limite hasta donde debe haber fotos
+    var r2 = radio+20; //Radio del circulo interno, donde NO debe haber puntos (la foto)
 
     //Primero genero un punto random en un cuadrado que inscriba al circulo mayor
     do{
