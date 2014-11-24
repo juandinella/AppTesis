@@ -20,10 +20,16 @@ $(function() {
     Renderizador.renderFoto(data.foto, data.usuario);
   });
 
+  socket.on('idUsuario', function (id) {
+    console.log("Nuevo usuario: " + id);
+    Renderizador.nuevoUsuario(id);
+  });
+
+
   socket.on('desconectado', function (usuario) {
     setTimeout(function(){
       Renderizador.borrarUsuario(usuario);
-    }, 30*1000);//Espero 30 segundos
+    }, 10*1000);//Espero 30 segundos
   });
 
 });

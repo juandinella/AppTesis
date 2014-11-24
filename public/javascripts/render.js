@@ -62,13 +62,21 @@ var Renderizador = new function(){
   } //Fin renderBordeFoto
 
   /*
-   * Muestro la imagen del perfil
+   * Calculo los rands y hago espacio para un nuevo usuario
    */
-  this.renderFoto = function(imagen, usuario){
+  this.nuevoUsuario = function(usuario){
     var cx = Math.floor(Math.random() * 1200);
     var cy = Math.floor(Math.random() * 700);
 
     Renderizador.usuarios[usuario] = {'cx': cx, 'cy': cy};
+  }
+  /*
+   * Muestro la imagen del perfil
+   */
+  this.renderFoto = function(imagen, usuario){
+    var cx = Renderizador.usuarios[usuario].cx;
+    var cy = Renderizador.usuarios[usuario].cy;
+
     //Creo la mascara
     Renderizador.defs.append('svg:clipPath')
       .attr('id', 'mascara')
@@ -90,6 +98,7 @@ var Renderizador = new function(){
       .attr('y', cy - 70)
       .attr('clip-path', 'url(#mascara)'); //Aplico la mascara
 
+      Renderizador.usuarios[usuario].visible = true;
       Renderizador.renderBordeFoto(usuario);
   } //Fin renderFoto
 
@@ -155,15 +164,17 @@ var Renderizador = new function(){
         .attr('stroke-width', 1)
         .attr('stroke', colorLinea); 
 
+      
       d3.timer(function() {
         var delta = (Date.now() - Renderizador.t0);
         Renderizador.usuarios[usuario].gEmociones.attr("transform", function(d) {
-          return "rotate(" + delta *.01 + "," + cx + "," + cy + ")";
+          return "rotate(" + (delta *.01)%360 + "," + cx + "," + cy + ")";
         });
         Renderizador.usuarios[usuario].gLineasEmociones.attr("transform", function(d) {
-          return "rotate(" + delta *.01 + "," + cx + "," + cy + ")";
+          return "rotate(" + (delta *.01)%360 + "," + cx + "," + cy + ")";
         });
       });
+
 
     }//Fin For scores
   }
@@ -173,7 +184,7 @@ var Renderizador = new function(){
    */
   this.borrarUsuario = function(usuario){
     $("[data-usuario='" +usuario+"']").fadeOut();
-    delete Renderizador.usuarios[usuario];
+    Renderizador.usuarios[usuario].visible = false;
   };
 
   /*
@@ -186,7 +197,6 @@ var Renderizador = new function(){
 
     //Primero genero un punto random en un cuadrado que inscriba al circulo mayor
     do{
-      console.log("Trying to find a point");
       randCx= Math.floor(Math.random() * (2*r1 + 1)) - r1;
       randCy= Math.floor(Math.random() * (2*r1 + 1)) - r1;
       distToCenter = Math.sqrt( Math.pow(randCx,2) + Math.pow(randCy,2) );

@@ -89,7 +89,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('nuevoUser', function (foto) {
         //Genero y envio un id de usuario alfanumerico aleatorio
         idUsuario = Math.random().toString(36).slice(2);
-        socket.emit('idUsuario', idUsuario);
+        io.sockets.emit('idUsuario', idUsuario);
 
         io.sockets.in('viz').emit('news','Nuevo User!');
         io.sockets.in('viz').emit('devolverFoto', {usuario: idUsuario, foto: foto});
