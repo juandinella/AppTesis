@@ -115,8 +115,8 @@ var Renderizador = new function(){
       .attr('id', 'mascara' + usuario)
       .append('svg:circle')
       .attr('data-usuario', usuario)
-      .attr('width', radio*2+20)
-      .attr('height', radio*2+20)
+      .attr('width', radio*2+25)
+      .attr('height', radio*2+25)
       .attr('cx', cx)
       .attr('cy', cy)
       .attr('r', radio)
@@ -125,8 +125,8 @@ var Renderizador = new function(){
       .append('svg:image')
       .attr('data-usuario', usuario)
       .attr('xlink:href', imagen)
-      .attr('width', radio*2+20)
-      .attr('height', radio*2+20)
+      .attr('width', radio*2+25)
+      .attr('height', radio*2+25)
       .attr('x', cx - radio-10)
       .attr('y', cy - radio-10)
       .attr('clip-path', 'url(#mascara' + usuario +')'); //Aplico la mascara
@@ -217,9 +217,9 @@ var Renderizador = new function(){
     var pct = ((dU.cantNegativos * -1 + dU.cantPositivos) / (dU.cantNeutrales + dU.cantPositivos+ dU.cantNegativos))/2+0.5;
 
     var coloresSegunPorcentaje = [
-      { pct: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },
+      { pct: 0.0, color: { r: 219, g: 68, b: 83 } },
       { pct: 0.5, color: { r: 255, g: 206, b: 85 } },
-      { pct: 1.0, color: { r: 0x00, g: 0xff, b: 0 } } 
+      { pct: 1.0, color: { r: 140, g: 192, b: 81 } } 
     ];
 
     for (var i = 1; i < coloresSegunPorcentaje.length - 1; i++) {
@@ -275,7 +275,7 @@ var Renderizador = new function(){
    * pero no dentro del mismo
    */
   this.randomCirculo = function(cx,cy, radio){
-    var r1 = radio+40; //Radio del circulo externo, limite hasta donde debe haber fotos
+    var r1 = radio+50; //Radio del circulo externo, limite hasta donde debe haber fotos
     var r2 = radio+20; //Radio del circulo interno, donde NO debe haber puntos (la foto)
 
     //Primero genero un punto random en un cuadrado que inscriba al circulo mayor

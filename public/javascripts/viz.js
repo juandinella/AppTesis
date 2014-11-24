@@ -29,7 +29,7 @@ $(function() {
   socket.on('desconectado', function (usuario) {
     setTimeout(function(){
       Renderizador.borrarUsuario(usuario);
-    }, 10*1000);//Espero 10 segundos
+    }, 60*25);//25min
   });
 
 });
