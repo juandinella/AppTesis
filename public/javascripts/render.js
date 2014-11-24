@@ -5,7 +5,7 @@ var Renderizador = new function(){
    */
   this.width = 1200; //Ancho del SVG
   this.height = 400; //Alto del SVG
-  
+  this.t0 = Date.now();
 
   /*
    * Creo el SVG, los 4 layers y el placeholder para defs
@@ -98,6 +98,11 @@ var Renderizador = new function(){
    */
   this.renderCirculos = function(scores, usuario){
 
+    if(typeof Renderizador.usuarios[usuario].gEmociones == 'undefined'){
+      Renderizador.usuarios[usuario].gEmociones = Renderizador.gEmociones.append('g');
+      Renderizador.usuarios[usuario].gLineasEmociones = Renderizador.gLineasEmociones.append('g');
+    }
+
     //Para cada circulo
     for (i = 0; i < scores.length; ++i) {
       var score = scores[i];
@@ -105,10 +110,8 @@ var Renderizador = new function(){
           cy = Renderizador.usuarios[usuario].cy;
 
       var random = Renderizador.randomCirculo(cx,cy);
-
-
       if(score > 0){
-        Renderizador.gEmociones.append('svg:image')
+        Renderizador.usuarios[usuario].gEmociones.append('svg:image')
             .attr('data-usuario', usuario)
             .attr('xlink:href', '../images/corazon.svg')
             .attr('width', 16)
@@ -119,7 +122,7 @@ var Renderizador = new function(){
         var colorLinea = '#8cc051';
         var modifPos = 10;
       } else if(score < 0){
-        Renderizador.gEmociones.append('svg:image')
+        Renderizador.usuarios[usuario].gEmociones.append('svg:image')
           .attr('data-usuario', usuario)
           .attr('xlink:href', '../images/cruz.svg')
           .attr('width', 16)
@@ -130,7 +133,7 @@ var Renderizador = new function(){
         var colorLinea = '#db4453';
         var modifPos = 10;
       } else {
-        Renderizador.gEmociones.append('circle')
+        Renderizador.usuarios[usuario].gEmociones.append('circle')
           .attr('data-usuario', usuario)
           .attr('cx', random.X)
           .attr('cy', random.Y)
@@ -143,7 +146,7 @@ var Renderizador = new function(){
         var modifPos = 0;
       }
 
-      Renderizador.gLineasEmociones.append('line')
+      Renderizador.usuarios[usuario].gLineasEmociones.append('line')
         .attr('data-usuario', usuario)
         .attr('x1', cx)
         .attr('y1', cy)
@@ -151,6 +154,16 @@ var Renderizador = new function(){
         .attr('y2', random.Y + modifPos)
         .attr('stroke-width', 1)
         .attr('stroke', colorLinea); 
+
+      d3.timer(function() {
+        var delta = (Date.now() - Renderizador.t0);
+        Renderizador.usuarios[usuario].gEmociones.attr("transform", function(d) {
+          return "rotate(" + delta *.01 + "," + cx + "," + cy + ")";
+        });
+        Renderizador.usuarios[usuario].gLineasEmociones.attr("transform", function(d) {
+          return "rotate(" + delta *.01 + "," + cx + "," + cy + ")";
+        });
+      });
 
     }//Fin For scores
   }
