@@ -4,8 +4,9 @@ var Renderizador = new function(){
    * Defino las variables de configuración
    */
   this.width = 1200; //Ancho del SVG
-  this.height = 400; //Alto del SVG
+  this.height = 650; //Alto del SVG
   this.t0 = Date.now();
+  this.emocionesOrbitando = false;
 
   /*
    * Creo el SVG, los 4 layers y el placeholder para defs
@@ -66,9 +67,32 @@ var Renderizador = new function(){
    * Calculo los rands y hago espacio para un nuevo usuario
    */
   this.nuevoUsuario = function(usuario){
-    var cx = Math.floor(Math.random() * 1200);
-    var cy = Math.floor(Math.random() * 700);
-    var radio = Math.floor(Math.random()*(60-20+1)+40);
+    var radio = Renderizador.randomNumero(30,60);
+    var cx, cy;
+
+    var encontrePosicion = false;
+    while(encontrePosicion == false){
+      encontrePosicion = true;
+
+      cx = Renderizador.randomNumero(radio+10, Renderizador.width -radio-40);
+      cy = Renderizador.randomNumero(radio+10, Renderizador.height-radio-40);
+
+      $.each(Renderizador.usuarios, function( index, value ) {
+        if(value.visible){
+          var x0 = cx;
+          var y0 = cy;
+          var x1 = value.cx;
+          var y1 = value.cy;
+
+          var distanciaEntreCentros = Math.sqrt((x0 -= x1) * x0 + (y0 -= y1) * y0);
+          console.log("distancia: " + distanciaEntreCentros);
+          if(distanciaEntreCentros < radio*2 + value.radio*2 ){
+            encontrePosicion = false;
+            console.log("Descartada esa!");
+          }
+        }
+      });
+    }
 
     Renderizador.usuarios[usuario] = {'cx': cx, 'cy': cy, 'radio': radio};
   }
@@ -82,7 +106,7 @@ var Renderizador = new function(){
 
     //Creo la mascara
     Renderizador.defs.append('svg:clipPath')
-      .attr('id', 'mascara')
+      .attr('id', 'mascara' + usuario)
       .append('svg:circle')
       .attr('data-usuario', usuario)
       .attr('width', radio*2+20)
@@ -97,12 +121,13 @@ var Renderizador = new function(){
       .attr('xlink:href', imagen)
       .attr('width', radio*2+20)
       .attr('height', radio*2+20)
-      .attr('x', cx - radio+6)
-      .attr('y', cy - radio+6)
-      .attr('clip-path', 'url(#mascara)'); //Aplico la mascara
+      .attr('x', cx - radio-10)
+      .attr('y', cy - radio-10)
+      .attr('clip-path', 'url(#mascara' + usuario +')'); //Aplico la mascara
 
       Renderizador.usuarios[usuario].visible = true;
       Renderizador.renderBordeFoto(usuario);
+      Renderizador.orbitarEmociones();
   } //Fin renderFoto
 
   /*
@@ -111,8 +136,8 @@ var Renderizador = new function(){
   this.renderCirculos = function(scores, usuario){
 
     if(typeof Renderizador.usuarios[usuario].gEmociones == 'undefined'){
-      Renderizador.usuarios[usuario].gEmociones = Renderizador.gEmociones.append('g');
-      Renderizador.usuarios[usuario].gLineasEmociones = Renderizador.gLineasEmociones.append('g');
+      Renderizador.usuarios[usuario].gEmociones = Renderizador.gEmociones.append('g').attr('class','gUsuarioEmociones').attr('data-usuario', usuario);
+      Renderizador.usuarios[usuario].gLineasEmociones = Renderizador.gLineasEmociones.append('g').attr('class','gUsuarioLineasEmociones').attr('data-usuario', usuario);
     }
 
     //Para cada circulo
@@ -168,21 +193,29 @@ var Renderizador = new function(){
         .attr('stroke-width', 1)
         .attr('stroke', colorLinea); 
 
-      
-      d3.timer(function() {
-        var delta = (Date.now() - Renderizador.t0);
-        Renderizador.usuarios[usuario].gEmociones.attr("transform", function(d) {
-          return "rotate(" + (delta *.01)%360 + "," + cx + "," + cy + ")";
-        });
-        Renderizador.usuarios[usuario].gLineasEmociones.attr("transform", function(d) {
-          return "rotate(" + (delta *.01)%360 + "," + cx + "," + cy + ")";
-        });
-      });
-
-
     }//Fin For scores
   }
 
+  /*
+   * Hago girar las emociones alrededor de las fotos
+   */
+  this.orbitarEmociones = function(){
+    if (Renderizador.emocionesOrbitando == false){
+      setInterval(function(){
+          var delta = (Date.now() - Renderizador.t0);
+          var gUsuarios = d3.selectAll("g.gUsuarioEmociones, g.gUsuarioLineasEmociones");
+          gUsuarios.each( function(d, i){
+              var usuario = d3.select(this).attr("data-usuario"),
+                cx = Renderizador.usuarios[usuario].cx,
+                cy = Renderizador.usuarios[usuario].cy;
+
+              d3.select(this).attr("transform", "rotate(" + (delta *.01)%360 + "," + cx + "," + cy + ")");
+          });
+      }, 41);
+      Renderizador.emocionesOrbitando = true;
+    }
+
+  }
   /*
    * Borro circulo, borde y emociones para un usuario
    */
@@ -196,7 +229,7 @@ var Renderizador = new function(){
    * pero no dentro del mismo
    */
   this.randomCirculo = function(cx,cy, radio){
-    var r1 = radio+60; //Radio del circulo externo, limite hasta donde debe haber fotos
+    var r1 = radio+40; //Radio del circulo externo, limite hasta donde debe haber fotos
     var r2 = radio+20; //Radio del circulo interno, donde NO debe haber puntos (la foto)
 
     //Primero genero un punto random en un cuadrado que inscriba al circulo mayor
@@ -209,6 +242,12 @@ var Renderizador = new function(){
 
     var respuesta = {'X': cx+randCx, 'Y': cy+randCy};
     return respuesta;
+  }
+  /*
+   * Funcion helper para generar un numero random entre dos numeros
+   */
+  this.randomNumero = function(min,max){
+    return Math.floor(Math.random()*(max-min+1)+min);
   }
 
 }
