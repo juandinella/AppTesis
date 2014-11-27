@@ -3,8 +3,8 @@ var Renderizador = new function(){
   /*
    * Defino las variables de configuración
    */
-  this.width = 1200; //Ancho del SVG
-  this.height = 650; //Alto del SVG
+  this.width = 800; //Ancho del SVG
+  this.height = 600; //Alto del SVG
   this.t0 = Date.now();
   this.emocionesOrbitando = false;
 
@@ -16,7 +16,7 @@ var Renderizador = new function(){
     .attr('width', this.width)
     .attr('height', this.height)
     // .style('background', '#454954')
-    .style('border', '2px solid #656d78');
+    // .style('border', '2px solid #656d78');
     this.gLineasEmociones = d3.select('svg').append('g');
     this.gEmociones = d3.select('svg').append('g');
     this.gFondo     = d3.select('svg').append('g');
@@ -39,14 +39,14 @@ var Renderizador = new function(){
     var cx = Renderizador.usuarios[usuario].cx,
         cy = Renderizador.usuarios[usuario].cy,
         radio = Renderizador.usuarios[usuario].radio,
-        circulosExteriores = [radio+20,radio+30,radio+40];
+        circulosExteriores = [radio+15,radio+25,radio+35];
 
     //Círculo relleno
     Renderizador.usuarios[usuario].bordeFoto = Renderizador.gFondo.append('circle')
       .attr('data-usuario', usuario)
       .attr('cx', cx)
       .attr('cy', cy)
-      .attr('r', radio+10)
+      .attr('r', radio+5)
       .style('fill', '#aab2bd');
 
     //Circulos exteriores (solo borde)
@@ -67,7 +67,7 @@ var Renderizador = new function(){
    * Calculo los rands y hago espacio para un nuevo usuario
    */
   this.nuevoUsuario = function(usuario){
-    var radio = Renderizador.randomNumero(30,60);
+    var radio = Renderizador.randomNumero(15,30);
     var cx, cy;
 
     var encontrePosicion = false;
@@ -159,32 +159,32 @@ var Renderizador = new function(){
         Renderizador.usuarios[usuario].gEmociones.append('svg:image')
             .attr('data-usuario', usuario)
             .attr('xlink:href', '../images/corazon.svg')
-            .attr('width', 16)
-            .attr('height', 14)
+            .attr('width', 12)
+            .attr('height', 10)
             .attr('x', random.X)
             .attr('y', random.Y)
 
         var colorLinea = '#8cc051';
-        var modifPos = 10;
+        var modifPos = 6;
       } else if(score < 0){
         Renderizador.usuarios[usuario].cantNegativos++;
         Renderizador.usuarios[usuario].gEmociones.append('svg:image')
           .attr('data-usuario', usuario)
           .attr('xlink:href', '../images/cruz.svg')
-          .attr('width', 16)
-          .attr('height', 14)
+          .attr('width', 12)
+          .attr('height', 10)
           .attr('x', random.X)
           .attr('y', random.Y);
 
         var colorLinea = '#db4453';
-        var modifPos = 10;
+        var modifPos = 6;
       } else {
         Renderizador.usuarios[usuario].cantNeutrales++;
         Renderizador.usuarios[usuario].gEmociones.append('circle')
           .attr('data-usuario', usuario)
           .attr('cx', random.X)
           .attr('cy', random.Y)
-          .attr('r', 8) 
+          .attr('r', 6) 
           .style('fill', '#ffce55')
           .attr('stroke-width', 1)
           .attr('stroke', '#f7b94a');
@@ -275,7 +275,7 @@ var Renderizador = new function(){
    * pero no dentro del mismo
    */
   this.randomCirculo = function(cx,cy, radio){
-    var r1 = radio+50; //Radio del circulo externo, limite hasta donde debe haber fotos
+    var r1 = radio+40; //Radio del circulo externo, limite hasta donde debe haber fotos
     var r2 = radio+20; //Radio del circulo interno, donde NO debe haber puntos (la foto)
 
     //Primero genero un punto random en un cuadrado que inscriba al circulo mayor
